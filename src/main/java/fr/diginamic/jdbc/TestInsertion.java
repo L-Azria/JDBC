@@ -26,6 +26,7 @@ public class TestInsertion {
         Statement st = connection.createStatement()){
             int nb = st.executeUpdate("insert into FOURNISSEUR (nom) values ('La Maison de la Peinture')");
             System.out.println(connection);
+            System.out.println(nb);
         } catch (SQLException e){
             System.err.println(e.getMessage());
         }
