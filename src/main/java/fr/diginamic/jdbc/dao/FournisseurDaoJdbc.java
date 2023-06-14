@@ -27,8 +27,8 @@ public class FournisseurDaoJdbc implements IFournisseurDao {
         List<Fournisseur> resultat = new ArrayList<>();
 
         try(Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
-            Statement st = connection.createStatement();
-            ResultSet curseur = st.executeQuery("SELECT ID, NOM FROM FOURNISSEUR")){
+            PreparedStatement st = connection.prepareStatement("SELECT * FROM FOURNISSEUR");
+            ResultSet curseur = st.executeQuery()){
 
             while (curseur.next()){
                 Integer id = curseur.getInt("id");
@@ -49,9 +49,10 @@ public class FournisseurDaoJdbc implements IFournisseurDao {
     @Override
     public void insert(Fournisseur fournisseur) {
         try(Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
-            Statement st = connection.createStatement()){
+            PreparedStatement pst = connection.prepareStatement("insert into FOURNISSEUR(NOM) values(?)")) {
             //System.out.println(fournisseur.getNom());
-            int nb = st.executeUpdate("insert into FOURNISSEUR (NOM) values ('" + fournisseur.getNom()+ "')");
+            pst.setString(1, fournisseur.getNom());
+            pst.executeUpdate();
         } catch (SQLException e){
             System.err.println(e.getMessage());
         }
@@ -61,8 +62,10 @@ public class FournisseurDaoJdbc implements IFournisseurDao {
     public int update(String ancienNom, String nouveauNom) {
         int nb = 0;
         try(Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
-            Statement st = connection.createStatement()){
-            nb = st.executeUpdate("UPDATE FOURNISSEUR SET NOM = '" + nouveauNom +"' WHERE NOM = '" + ancienNom+ "'");
+            PreparedStatement pst = connection.prepareStatement("UPDATE FOURNISSEUR SET NOM = ? WHERE NOM = ?")){
+            pst.setString(1, nouveauNom);
+            pst.setString(2, ancienNom);
+            nb = pst.executeUpdate();
         } catch (SQLException e){
             System.err.println(e.getMessage());
         }
@@ -74,10 +77,9 @@ public class FournisseurDaoJdbc implements IFournisseurDao {
     public boolean delete(Fournisseur fournisseur) {
         int nb =0;
         try(Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
-            Statement st = connection.createStatement()){
-            nb = st.executeUpdate("DELETE FROM FOURNISSEUR WHERE NOM = '" +fournisseur.getNom()+"'");
-            System.out.println(connection);
-            System.out.println(nb);
+            PreparedStatement pst = connection.prepareStatement("DELETE FROM FOURNISSEUR WHERE NOM = ?")){
+            pst.setString(1, fournisseur.getNom());
+            nb = pst.executeUpdate();
 
         } catch (SQLException e){
             System.err.println(e.getMessage());

@@ -9,8 +9,8 @@ import java.util.List;
 public class App {
     public static void main(String[] args) {
         listeFournisseurs();
-        modifierFournisseurs("FDM SA 2", "FDM SA");
-        insererFournisseurs(new Fournisseur("azer"));
+        modifierFournisseurs("FDM SA 5", "FDM SA 4");
+        insererFournisseurs(new Fournisseur("azerty"));
         supprimerFournisseurs (new Fournisseur("azer"));
     }
 
@@ -44,8 +44,8 @@ public class App {
 
     private static void supprimerFournisseurs(Fournisseur fournisseur) {
         try {
-            IFournisseurDao dao = new FournisseurDaoJdbc();
-            System.out.println(dao.delete(fournisseur));
+          IFournisseurDao dao = new FournisseurDaoJdbc();
+          System.out.println(dao.delete(fournisseur));
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
